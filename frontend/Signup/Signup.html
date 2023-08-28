@@ -34,7 +34,7 @@
     <div class="container">
         <div class="row justify-content-center">
             <div class="col-md-6 shadow">
-                <form>
+                <form onsubmit="signup(event)" method="post">
                     <div class="mb-3">
                         <label for="name" class="form-label">Name:</label>
                         <input class="form-control" type="text" name="name" id="name" required>
@@ -44,8 +44,8 @@
                         <input class="form-control" type="text" name="email" id="email" required>
                     </div>
                     <div class="mb-3">
-                        <label for="phoneno" class="form-label">Phone number:</label>
-                        <input class="form-control" type="text" name="phoneno" id="phoneno" required>
+                        <label for="phone" class="form-label">Phone number:</label>
+                        <input class="form-control" type="text" name="phone" id="phone" required>
                     </div>
                     <div class="mb-3">
                         <label for="password" class="form-label">Password:</label>
@@ -58,5 +58,7 @@
             </div>
         </div>
     </div>
+    <script src="./Signup.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.4.0/axios.min.js"></script>
 </body>
 </html>
