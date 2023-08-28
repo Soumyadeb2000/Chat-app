@@ -7,8 +7,8 @@ async function signup(event) {
         const password = event.target.password.value;
         const obj = {name, email, phone, password}
         await axios.post('http://localhost:3000/user/signup', obj);
-        alert('Signup was successful')
+        alert('Successfully signed up.')
     } catch (error) {
-        alert("User already exists!!")
+        alert("User already exists, Please Login.")
     }
 }
