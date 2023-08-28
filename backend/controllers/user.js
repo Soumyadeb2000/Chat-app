@@ -2,25 +2,9 @@ const User = require('../models/user');
 
 const bcrypt = require('bcrypt');
 
-const sequelize = require('../utils/database');
+const jwt = require('jsonwebtoken');
 
-function encryptPassword(password) {
-    return new Promise((resolve, reject) => {
-        const saltRounds = 15;
-        bcrypt.genSalt(saltRounds, (err, salt) => {
-            if(err)
-            reject(err)
-            else {
-                bcrypt.hash(password, salt, (err, hash) => {
-                    if(err)
-                    reject(err)
-                    else
-                    resolve(hash);
-                }) 
-            }
-        })
-    })
-}
+const sequelize = require('../utils/database');
 
 exports.signup = async (req, res) => {
     try {
@@ -43,4 +27,46 @@ exports.signup = async (req, res) => {
     } catch (error) {
         res.status(500).json({Error: error.message});
     }
+}
+
+exports.login = async (req, res) => {
+    try {
+        const email = req.body.email;
+        const password = req.body.password;
+        const user = await User.findOne({where: {email: email}});
+        bcrypt.compare(password, user.password, (err, result) => {
+            if(result) {
+                res.status(200).json({token: generateAccessToken(user)})
+            }
+            else {
+                res.status(401).json({error: "Wrong Password"});
+            }
+        })
+    } catch (error) {
+        res.status(404).json({Error: "User not found!"});
+    }
+    
+}
+
+function encryptPassword(password) {
+    return new Promise((resolve, reject) => {
+        const saltRounds = 15;
+        bcrypt.genSalt(saltRounds, (err, salt) => {
+            if(err)
+            reject(err)
+            else {
+                bcrypt.hash(password, salt, (err, hash) => {
+                    if(err)
+                    reject(err)
+                    else
+                    resolve(hash);
+                }) 
+            }
+        })
+    })
+}
+
+function generateAccessToken(user) {
+    const jwtPasscode = 'banku8840401534';
+    return jwt.sign({name: user.name, id: user.id}, jwtPasscode);
 }

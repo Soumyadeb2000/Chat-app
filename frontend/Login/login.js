@@ -5,8 +5,8 @@ async function login(event) {
         const password = event.target.password.value;
         const obj = {email, password}
         await axios.post('http://localhost:3000/user/login', obj);
-        alert('Successfully signed up.')
+        alert('Successfully login.')
     } catch (error) {
-        alert("User already exists, Please Login.")
+        alert("User not found")
     }
 }
