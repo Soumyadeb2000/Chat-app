@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home Page</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm" crossorigin="anonymous"></script>
+    <style>
+        .container {
+            margin-top: 2rem;
+        }
+        header {
+            font: oblique
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1 style="text-align: center;">Chat App</h1>
+    </div>
+
+    <div class="container" id="chat-display-area">
+        <div class="row">
+            
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-12" style="position: absolute; bottom: 0%;">
+                <form onsubmit="sendChat(event)" method="post">
+                    <div class="mb-2">
+                        <div class="input-group">
+                            <input class="form-control border-black" type="text" name="message" id="message" required>
+                            <input type="submit" value="Send" class="btn btn-dark float-end">
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <script src="./Home.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.4.0/axios.min.js"></script>
+</body>
+</html>
