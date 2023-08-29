@@ -9,6 +9,8 @@ const Chat = sequelize.define('chat', {
             allowNull: false,
             primaryKey: true
         },
+    
+    name: Sequelize.TEXT('long'),    
 
     message: Sequelize.STRING
 });

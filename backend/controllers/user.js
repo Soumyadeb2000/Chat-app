@@ -25,6 +25,7 @@ exports.signup = async (req, res) => {
             res.status(409).json({error: "User already exists"});
         }
     } catch (error) {
+        await t.rollback();
         res.status(500).json({Error: error.message});
     }
 }
