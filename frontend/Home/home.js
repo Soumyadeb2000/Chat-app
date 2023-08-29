@@ -10,28 +10,33 @@ async function sendChat(event) {
     }
 }
 
-let count = 0;
+// let count = 0;
 async function showChat(data) {
     const parentElm = document.getElementById('chat-display-area');
-    const user = parseJwt(localStorage.getItem('token'));
     const childElm = document.createElement('p');
-    if(count%2 == 0) {
-        childElm.classList = "p-1 rounded"
-        childElm.style = "background-color: lightgray;"
-    }
+    // if(count%2 == 0) {
+    //     childElm.classList = "p-1 rounded"
+    //     childElm.style = "background-color: lightgray;"
+    // }
     childElm.innerHTML = `${data.name} : ${data.message}`;
     parentElm.appendChild(childElm);
-    count++;
+    // count++;
 }
 
-window.addEventListener('DOMContentLoaded', async () => {
+
+window.addEventListener('DOMContentLoaded', setInterval(async () => {
+    const chatBody = document.getElementById('chat-display-area');
+    
     const response = await axios.get('http://localhost:3000/chat/get-chat', {headers: {'Authorization': localStorage.getItem('token')}});
+    chatBody.innerHTML="";
     for (let i = 0; i < response.data.chatData.length; i++) {
         const element = response.data.chatData[i];
         console.log(element);
-        showChat(element)
+        showChat(element);
     }
-})
+}, 1000));
+
+
 
 function parseJwt(token) {
     if (!token) {
