@@ -1,6 +1,7 @@
 const sequelize = require('../utils/database')
 
 const Chat = require('../models/chat');
+const Sequelize = require('sequelize');
 
 exports.postChat = async (req, res) => {
     const t = await sequelize.transaction();
@@ -19,8 +20,16 @@ exports.postChat = async (req, res) => {
 
 exports.getChat = async (req, res) => {
     try {
-        const chatData = await Chat.findAll({ attributes: ['name', 'message']});
-        res.status(200).json({chatData});
+        const lastMessageId = req.query.lastMessageId;
+        if(lastMessageId) {
+            const newChatData = await Chat.findAll({where: {id: {[Sequelize.Op.gt]: lastMessageId}}}, { attributes: ['name', 'id', 'message']});
+            res.status(200).json({newChatData});
+        }
+        else {
+            const chatData = await Chat.findAll({ attributes: ['name', 'id', 'message']});
+            res.status(200).json({chatData});
+        }
+
     } catch (error) {
         res.status(404).json({Error: "Data not found!!"});
     }

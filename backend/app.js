@@ -31,6 +31,7 @@ User.hasMany(Chat);
 Chat.belongsTo(User);
 
 sequelize.sync()
+// sequelize.sync({force: true})
 .then(() => {
     console.log('Server online');
     app.listen(3000);
