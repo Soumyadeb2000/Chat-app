@@ -8,6 +8,7 @@ async function signup(event) {
         const obj = {name, email, phone, password}
         await axios.post('http://localhost:3000/user/signup', obj);
         alert('Successfully signed up.')
+        window.location.href = "http://127.0.0.1:5500/frontend/Login/login.html"
     } catch (error) {
         alert("User already exists, Please Login.")
     }

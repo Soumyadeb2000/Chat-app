@@ -45,8 +45,7 @@ exports.login = async (req, res) => {
         })
     } catch (error) {
         res.status(404).json({Error: "User not found!"});
-    }
-    
+    }  
 }
 
 function encryptPassword(password) {

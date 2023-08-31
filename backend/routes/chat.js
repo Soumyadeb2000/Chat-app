@@ -6,8 +6,8 @@ const middleware = require('../middlewares/authorize')
 
 const router = express.Router();
 
-router.post('/send-chat', middleware.authorize, chatController.postChat);
+router.post('/send-chat/:activeGroup', middleware.authorize, chatController.postChat);
 
-router.get('/get-chat', chatController.getChat)
+router.get('/get-chat/:activeGroup', chatController.getChat)
 
 module.exports = router;
