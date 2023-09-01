@@ -8,7 +8,9 @@ const Members = sequelize.define('member', {
         autoIncrement: true,
         allowNull: false,
         primaryKey: true
-    }
+    },
+
+    isAdmin: Sequelize.BOOLEAN
 });
 
 module.exports = Members;

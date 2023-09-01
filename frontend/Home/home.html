@@ -11,11 +11,30 @@
     <body>
         <h1 style="text-align: center;">Chat App</h1>
         <div class="row">
-            <div class="col-5" id="dynamic-btns">
+            <div class="col-6" id="dynamic-btns">
                 <div class="m-1 col-5">
                     <button class="btn btn-dark" id="show-groups-btn">My groups</button>
                     <div class="" id="user-groups" style="display: none;">
                         
+                    </div>
+                    <div class="m-1">
+                        <div class="m-1 col-7">
+                            <button class="btn btn-primary btn-sm p-0 m-1" id="add-to-group-btn" style="display: none;">Add member</button>
+                            <div class="col-md-2" id="add-to-group-form" style="display: none;">
+                                <form onsubmit="addToGroup(event)" method="post">
+                                    <div class="p-0">
+                                        <label for="name"><b>Name</b></label>
+                                        <input type="text" name="name" id="name" required>
+                                    </div>
+                                    <div class="mt-2">
+                                        <input type="submit" value="Add member" class="small">
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                        <ul id="show-members-area" style="display: none;">
+
+                        </ul>    
                     </div>
                 </div>
                 <div class="m-1 col-5">
@@ -32,22 +51,8 @@
                         </form>
                     </div>
                 </div>
-                <div class="m-1 col-5">
-                    <button class="btn btn-dark" id="join-group-btn">Join new group</button>
-                    <div class="col-md-2" id="join-group-form" style="display: none;">
-                        <form onsubmit="sendJoinGroupData(event)" method="post">
-                            <div class="p-0">
-                                <label for="name"><b>Group name</b></label>
-                                <input type="text" name="name" id="name"  required>
-                            </div>
-                            <div class="mt-2">
-                                <input type="submit" value="Join group" class="small">
-                            </div>
-                        </form>
-                    </div>
-                </div>
             </div>
-            <div class="col-7">
+            <div class="col-6">
                 <div id="chat-display-area" class="m-4 col-10 float-end">
                 
                 </div>

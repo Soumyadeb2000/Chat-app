@@ -14,6 +14,8 @@ const chatRoutes = require('./routes/chat');
 
 const groupRoutes = require('./routes/group');
 
+const adminRoutes = require('./routes/admin');
+
 const User = require('./models/user');
 
 const Chat = require('./models/chat');
@@ -35,14 +37,19 @@ app.use('/chat', chatRoutes);
 
 app.use('/group', groupRoutes);
 
+app.use('/admin', adminRoutes);
+
 User.hasMany(Chat);
 Chat.belongsTo(User);
 
 Group.belongsToMany(User, {through: Members});
 User.belongsToMany(Group, {through: Members});
 
-Group.hasMany(Chat)
-Chat.belongsTo(Group)
+Members.belongsTo(User);
+User.hasMany(Members);
+
+Group.hasMany(Chat);
+Chat.belongsTo(Group);
 
 sequelize.sync()
 //sequelize.sync({force: true})

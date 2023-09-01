@@ -12,4 +12,6 @@ router.post('/join-group', middleware.authorize, groupController.joinGroup);
 
 router.get('/get-groups', middleware.authorize, groupController.getGroups);
 
+router.get('/:get-members', groupController.getMembers);
+
 module.exports = router;

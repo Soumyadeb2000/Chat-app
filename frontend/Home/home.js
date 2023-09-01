@@ -44,7 +44,6 @@ window.addEventListener('DOMContentLoaded', () => {
             else
             count = 0;
         const msg = JSON.parse(localStorage.getItem('messages'));
-        const allChat = document.getElementById('all-chat');
         if(msg) {
             const chatBody = document.getElementById('chat-display-area');
             chatBody.innerHTML="";
@@ -97,13 +96,23 @@ async function updateChat() {
     }
 }
 
+async function addToGroup(event) {
+    try {
+        event.preventDefault();
+        const name = event.target.name.value;
+        await axios.post('http://localhost:3000/admin/add-member', {name, group: localStorage.getItem('activeGroup')});  
+    } catch (error) {
+        console.log(error.message);
+    }
+}
+
 const createGroupBtn = document.getElementById('create-group-btn');
 const createGroupForm = document.getElementById('create-group-form');
 createGroupBtn.addEventListener('click', () => {
     if(createGroupForm.style.display === 'none') {
         createGroupBtn.textContent = 'Exit';
         createGroupForm.style.display = 'block';
-        
+        allChat.style.display = 'none';
     }
     else {
         createGroupBtn.textContent = 'Create new group';
@@ -111,25 +120,15 @@ createGroupBtn.addEventListener('click', () => {
     }  
 })
 
-const joinGroupBtn = document.getElementById('join-group-btn');
-const joinGroupForm = document.getElementById('join-group-form');
-joinGroupBtn.addEventListener('click', () => {
-    if(joinGroupForm.style.display === 'none') {
-        joinGroupBtn.textContent = 'Exit';
-        joinGroupForm.style.display = 'block';
-    }
-    else {
-        joinGroupBtn.textContent = 'Join new group';
-        joinGroupForm.style.display = 'none';
-    }  
-})
 
 const showGroupsBtn = document.getElementById('show-groups-btn');
 const showGroupsBody = document.getElementById('user-groups');
+const addToGroupBtn = document.getElementById('add-to-group-btn');
+const addToGroupForm = document.getElementById('add-to-group-form');
 showGroupsBtn.addEventListener('click', () => {
-    getGroups();
+    getGroups(showGroupsBtn.textContent);
     if(JSON.stringify(localStorage.getItem('messages')) === null || JSON.stringify(localStorage.getItem('messages')) === undefined) {
-        document.getElementById('all-chat').style.display = "block";
+        document.getElementById('all-chat').style.display = "none";
     }
     if(showGroupsBody.style.display === 'none') {
         showGroupsBtn.textContent = 'Exit';
@@ -138,12 +137,15 @@ showGroupsBtn.addEventListener('click', () => {
     }
     else {
         allChat.style.display = 'none';
-        showGroupsBtn.textContent = 'My group';
+        showGroupsBtn.textContent = 'My groups';
         showGroupsBody.style.display = 'none';
         localStorage.removeItem('activeGroup');
         localStorage.removeItem('messages');
         document.getElementById('chat-display-area').innerHTML = "";
-
+        document.getElementById('all-chat').style.display = "none";
+        addToGroupBtn.style.display = 'none';
+        addToGroupForm.style.display = 'none';
+        document.getElementById('show-members-area').innerHTML = '';
     }  
 })
 
@@ -152,41 +154,30 @@ async function sendCreateGroupData(event) {
     try {
         const groupName = event.target.name.value;
         const obj = {groupName};
-        await axios.post('http://localhost:3000/group/create-group', obj, {headers: {'Authorization': localStorage.getItem('token')}});
+        const response = await axios.post('http://localhost:3000/group/create-group', obj, {headers: {'Authorization': localStorage.getItem('token')}});
         alert("Group created");
+        localStorage.setItem(groupName, true);
     } catch (error) {
         alert("Couln't create the group or it already exists.");
     }
 }
 
-async function sendJoinGroupData(event) {
-    event.preventDefault();
-    try {
-        const groupName = event.target.name.value;
-        await axios.post('http://localhost:3000/group/join-group', {groupName}, {headers: {'Authorization': localStorage.getItem('token')}});
-        alert('Group joined');
-    } catch (error) {
-        if(error.response.status === 409)
-        alert('You are already in the group');
-        else
-        alert("Group doesn't exist");
-    }
-}
-
-async function getGroups() {
+async function getGroups(groupName) {
     try {
         const userGroups = document.getElementById('user-groups');
         userGroups.innerHTML="";
-        const response = await axios.get('http://localhost:3000/group/get-groups', {headers: {'Authorization': localStorage.getItem('token')}});
-        for (let i = 0; i < response.data.groups.length; i++) {
-            const group = response.data.groups[i];
-            const btn = document.createElement('input');
-            btn.type = 'button';
-            btn.value = group.name;
-            btn.id = group.name;
-            btn.classList = 'p-1 m-1 btn btn-outline-dark';
-            userGroups.appendChild(btn);
-            switchGroup(btn);
+        if(groupName === 'My groups') {
+            const response = await axios.get('http://localhost:3000/group/get-groups', {headers: {'Authorization': localStorage.getItem('token')}});
+            for (let i = 0; i < response.data.groups.length; i++) {
+                const group = response.data.groups[i];
+                const btn = document.createElement('input');
+                btn.type = 'button';
+                btn.value = group.name;
+                btn.id = group.name;
+                btn.classList = 'p-1 m-1 btn btn-outline-dark';
+                userGroups.appendChild(btn);
+                switchGroup(btn);
+            }
         }
     } catch (error) {
         alert(error.message);
@@ -203,26 +194,99 @@ function switchGroup(btn) {
             document.getElementById('chat-display-area').innerHTML = "";
             messages = [];
             localStorage.removeItem('messages')
+            addToGroupBtn.style.display = 'none';
+            addToGroupForm.style.display = 'none';
+            document.getElementById('show-members-area').style.display = 'none';
+            document.getElementById('show-members-area').innerHTML = '';
         }
         else {
-            btn.classList = 'p-1 m-1 btn btn-outline-dark';
             allChat.style.display = "block";
             btn.classList = 'p-1 m-1 btn btn-dark';
             localStorage.setItem('activeGroup', btn.value);
+            addToGroupBtn.style.display = 'block';
             storeMessageInLocalStorage();
-            
+            document.getElementById('show-members-area').style.display = 'block';
+            showMembers(btn.value);
         }
     }
 }
 
-function parseJwt(token) {
-    if (!token) {
-        console.log("Not a token");
-        return;
+addToGroupBtn.addEventListener('click', () => {
+    if(addToGroupBtn.textContent === "Add member") {
+        addToGroupForm.style.display = 'block';
+        addToGroupBtn.textContent = 'Close';
+
     }
-    const base64Url = token.split(".")[1];
-    const base64 = base64Url.replace("-", "+").replace("_", "/");
-    return JSON.parse(window.atob(base64));
-  }
+    else {
+        addToGroupBtn.textContent = "Add member";
+        addToGroupForm.style.display = 'none';
+    }
+});
 
+async function showMembers(group) {
+    const response = await axios.get(`http://localhost:3000/group/get-members/?group=${group}`);
+    for (let i = 0; i < response.data.users.length; i++) {
+        const parentElm = document.getElementById('show-members-area');
+        const childElm = document.createElement('li');
+        const removeBtn = document.createElement('input');
+        const makeAdminBtn = document.createElement('input');
+        const userData = response.data.users[i];
+        const userName = response.data.users[i].user.name;
+        childElm.textContent = userName;
+        parentElm.appendChild(childElm);
+        if(userData.isAdmin) {
+            removeBtn.type = 'button';
+            removeBtn.value = 'Remove';
+            removeBtn.id = userData.userId;
+            removeBtn.classList = 'btn btn-danger btn-sm p-0 m-1';
+            childElm.appendChild(removeBtn);
+            removeBtn.onclick = async () => {
+                removeMemberFromGroup(removeBtn, group);
+            }
+        }
+        else {
+            removeBtn.type = 'button';
+            removeBtn.value = 'Remove';
+            removeBtn.id = userData.userId;
+            removeBtn.classList = 'btn btn-danger btn-sm p-0 m-1';
+            childElm.appendChild(removeBtn);
+            removeBtn.onclick = async () => {
+                removeMemberFromGroup(removeBtn, group);
+            }
 
+            makeAdminBtn.type = 'button';
+            makeAdminBtn.value = 'Make admin';
+            makeAdminBtn.id = userData.userId;
+            makeAdminBtn.classList = 'btn btn-secondary btn-sm p-0 m-1';
+            childElm.appendChild(makeAdminBtn);
+            makeAdminBtn.onclick = async () => {
+                makeMemberAdmin(makeAdminBtn, group);
+                alert(`${userName} has been created an Admin of ${group}`)
+            }
+        }
+    }   
+}
+
+async function makeMemberAdmin(btn, group) {
+    const userId = btn.id;
+    console.log(userId);
+    try {
+        axios.put(`http://localhost:3000/admin/make-admin/${userId}?group=${group}`);
+        childElm.removeChild(makeAdminBtn);
+    } catch (error) {
+        alert(`Failed to remove ${user.name}`);
+    } 
+}
+
+async function removeMemberFromGroup(btn, group) {
+    try {
+        const userId = btn.id;
+        axios.delete(`http://localhost:3000/admin/remove-member/${userId}/?group=${group}`);
+        const parentElm = btn.parentElement.parentElement;
+        const childElm = btn.parentElement;
+        parentElm.removeChild(childElm);
+        alert(`Member removed`)
+    } catch (error) {
+        alert(`Failed to remove`);
+    } 
+}
