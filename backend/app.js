@@ -4,6 +4,8 @@ const app = express();
 
 const cors = require('cors');
 
+const helmet = require('helmet');
+
 const bodyParser = require('body-parser');
 
 const sequelize = require('./utils/database');
@@ -22,12 +24,18 @@ const Chat = require('./models/chat');
 
 const Group = require('./models/group');
 
-const Members = require('./models/group-members')
+const Members = require('./models/group-members');
+
+const path = require('path');
+
+require('dotenv').config();
 
 app.use(cors({
-    origin: "http://127.0.0.1:5500",
+    origin: process.env.ORIGIN,
     credentials: true
 }));
+
+app.use(helmet());
 
 app.use(bodyParser.json());
 
@@ -38,6 +46,12 @@ app.use('/chat', chatRoutes);
 app.use('/group', groupRoutes);
 
 app.use('/admin', adminRoutes);
+
+app.use((req, res) => {
+    const url = req.url
+    console.log(url);
+    res.sendFile(path.join(__dirname, `public/${url}`));
+})
 
 User.hasMany(Chat);
 Chat.belongsTo(User);
@@ -52,10 +66,9 @@ Group.hasMany(Chat);
 Chat.belongsTo(Group);
 
 sequelize.sync()
-//sequelize.sync({force: true})
 .then(() => {
     console.log('Server online');
-    app.listen(3000);
+    app.listen(process.env.PORT);
 })
 .catch((err) => {
     console.log(err.message);

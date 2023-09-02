@@ -5,6 +5,9 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 
 const sequelize = require('../utils/database');
+const Members = require('../models/group-members');
+
+require('dotenv').config();
 
 exports.signup = async (req, res) => {
     try {
@@ -50,7 +53,7 @@ exports.login = async (req, res) => {
 
 function encryptPassword(password) {
     return new Promise((resolve, reject) => {
-        const saltRounds = 15;
+        const saltRounds = +process.env.SALT_ROUNDS;
         bcrypt.genSalt(saltRounds, (err, salt) => {
             if(err)
             reject(err)
@@ -67,6 +70,6 @@ function encryptPassword(password) {
 }
 
 function generateAccessToken(user) {
-    const jwtPasscode = 'banku8840401534';
+    const jwtPasscode = process.env.JWT_CODE;
     return jwt.sign({name: user.name, id: user.id}, jwtPasscode);
 }

@@ -80,35 +80,33 @@ exports.getMembers = async (req, res) => {
                                                 model: User,
                                                 attributes: ['name']
                                             }
-                                            });
-        // const allUserIds = members.map((member) => {
-        //     return member.userId;
-        // })
-        // const users = await Member.findAll({where: {id: allUserIds},
-        //                                  attributes: ['id', 'name'],
-        //                                  include: {
-        //                                     model: Member,
-        //                                     attributes: ['isAdmin']
-        //                                  }
-        //                     });
-        // console.log(users);                    
-        // if(users) {
-        //     const data = await Promise.all(members.map(async (member) => {
-        //         const user = User.findOne({where: {id: member.userId}})
-        //         console.log(user);
-        //         return {    
-        //             id: user.id,
-        //             name: user.name,
-        //             isAdmin: member.isAdmin
-        //         }
-        //     }))
-
+                                            });                 
+        if(users) {
             res.status(200).json({users});
-        // }
-        // else {
-        //     res.status(404).json({Error: "No members in the group"})
-        // }
+        }
+        else {
+            res.status(404).json({Error: "No members in the group"})
+        }
     } catch (error) {
         res.status(500).json({Error: error.message});
     }
 }
+
+exports.getisAdmin = async (req, res) => {
+    try {
+        const user = req.user;
+        const groupName = req.params.group;
+        const group = await Group.findOne({where: {name: groupName}, attributes: ['id']});
+        console.log(group);
+        const member = await Member.findOne({where: {userId: user.id, groupId: group.id}, attributes: ['isAdmin']});
+       
+        if(member.isAdmin) {
+            res.status(200).json({isAdmin: member.isAdmin});
+        }
+        else {
+            res.status(404).json({Msg: "User not found"});
+        }
+    } catch (error) {
+        res.status(500).json({Error: error.message});
+    }
+}   

@@ -12,8 +12,9 @@ exports.addToGroup = async (req, res) => {
     try {
         const groupName = req.body.group;
         const name = req.body.name;
-        const user = await User.findOne({where: {name: name}, attributes: ['id']});
-        const group = await Group.findOne({where: {name: groupName}, attributes: ['id']});
+        const user = User.findOne({where: {name: name}, attributes: ['id']});
+        const group = Group.findOne({where: {name: groupName}, attributes: ['id']});
+        console.log(Promise.all(user, group));
         const member = await Member.findOne({where: {userId: user.id, groupId: group.id}})
         if(member) {
             await t.rollback();

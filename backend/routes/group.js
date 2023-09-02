@@ -14,4 +14,6 @@ router.get('/get-groups', middleware.authorize, groupController.getGroups);
 
 router.get('/:get-members', groupController.getMembers);
 
+router.get('/check-admin/:group', middleware.authorize, groupController.getisAdmin);
+
 module.exports = router;
