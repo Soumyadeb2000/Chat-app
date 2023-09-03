@@ -2,7 +2,7 @@ let messages = [];
 let count = 0;
 const allChat = document.getElementById('all-chat');
 async function checkAdmin(group) {
-   const response = await axios.get(`http://localhost:3000/group/check-admin/${group}`, {headers: {'Authorization': localStorage.getItem('token')}});
+   const response = await axios.get(`http://65.0.81.231:3000/ChatApp/group/check-admin/${group}`, {headers: {'Authorization': localStorage.getItem('token')}});
    localStorage.setItem(group, response.data.isAdmin);
 }
 
@@ -11,7 +11,7 @@ async function sendChat(event) {
         event.preventDefault()
         const message = event.target.message.value;
         const obj = {message: message};
-        const response = await axios.post(`http://localhost:3000/chat/send-chat/${localStorage.getItem('activeGroup')}`, obj, {headers: {'Authorization': localStorage.getItem('token')}});
+        const response = await axios.post(`http://65.0.81.231:3000/ChatApp/chat/send-chat/${localStorage.getItem('activeGroup')}`, obj, {headers: {'Authorization': localStorage.getItem('token')}});
         if(messages.length < 10) {
             messages.push(response.data.userChat);
         }   
@@ -66,7 +66,7 @@ window.addEventListener('DOMContentLoaded', () => {
 });
 
 async function storeMessageInLocalStorage() {
-    const response = await axios.get(`http://localhost:3000/chat/get-chat/${localStorage.getItem('activeGroup')}`);
+    const response = await axios.get(`http://65.0.81.231:3000/ChatApp/chat/get-chat/${localStorage.getItem('activeGroup')}`);
     for (let i = 0; i < response.data.chatData.length; i++) {
         const element = response.data.chatData[i];
         if(messages.length < 10) {
@@ -85,7 +85,7 @@ async function updateChat() {
     const messagesArrayInLocalStorage = JSON.parse(localStorage.getItem('messages'));
     const length = messagesArrayInLocalStorage.length - 1;
     const lastMessageId = messagesArrayInLocalStorage[length].id ;
-    const response = await axios.get(`http://localhost:3000/chat/get-chat/${localStorage.getItem('activeGroup')}/?lastMessageId=${lastMessageId}`); 
+    const response = await axios.get(`http://65.0.81.231:3000/ChatApp/chat/get-chat/${localStorage.getItem('activeGroup')}/?lastMessageId=${lastMessageId}`); 
     for (let i = 0; i < response.data.newChatData.length; i++) {
         const element = response.data.newChatData[i];
         newMessages.push(element);
@@ -105,7 +105,7 @@ async function addToGroup(event) {
     try {
         event.preventDefault();
         const name = event.target.name.value;
-        await axios.post('http://localhost:3000/admin/add-member', {name, group: localStorage.getItem('activeGroup')});  
+        await axios.post('http://65.0.81.231:3000/ChatApp/admin/add-member', {name, group: localStorage.getItem('activeGroup')});  
     } catch (error) {
         console.log(error.message);
     }
@@ -160,7 +160,7 @@ async function sendCreateGroupData(event) {
     try {
         const groupName = event.target.name.value;
         const obj = {groupName};
-        await axios.post('http://localhost:3000/group/create-group', obj, {headers: {'Authorization': localStorage.getItem('token')}});
+        await axios.post('http://65.0.81.231:3000/ChatApp/group/create-group', obj, {headers: {'Authorization': localStorage.getItem('token')}});
         alert("Group created");
         localStorage.setItem(groupName, true);
     } catch (error) {
@@ -173,7 +173,7 @@ async function getGroups(groupName) {
         const userGroups = document.getElementById('user-groups');
         userGroups.innerHTML="";
         if(groupName === 'My groups') {
-            const response = await axios.get('http://localhost:3000/group/get-groups', {headers: {'Authorization': localStorage.getItem('token')}});
+            const response = await axios.get('http://65.0.81.231:3000/ChatApp/group/get-groups', {headers: {'Authorization': localStorage.getItem('token')}});
             for (let i = 0; i < response.data.groups.length; i++) {
                 const group = response.data.groups[i];
                 const btn = document.createElement('input');
@@ -255,7 +255,7 @@ async function showMembers(group) {
     checkAdmin(group);
     const isAdmin = localStorage.getItem(group);
    
-    const response = await axios.get(`http://localhost:3000/group/get-members/?group=${group}`);
+    const response = await axios.get(`http://65.0.81.231:3000/ChatApp/group/get-members/?group=${group}`);
     for (let i = 0; i < response.data.users.length; i++) {
         const parentElm = document.getElementById('show-members-area');
         const childElm = document.createElement('li');
@@ -304,7 +304,7 @@ async function showMembers(group) {
 async function makeMemberAdmin(btn, group) {
     const userId = btn.id;
     try {
-        axios.put(`http://localhost:3000/admin/make-admin/${userId}?group=${group}`);
+        axios.put(`http://65.0.81.231:3000/ChatApp/admin/make-admin/${userId}?group=${group}`);
         childElm.removeChild(makeAdminBtn);
     } catch (error) {
         alert(`Failed to remove ${user.name}`);
@@ -314,7 +314,7 @@ async function makeMemberAdmin(btn, group) {
 async function removeMemberFromGroup(btn, group) {
     try {
         const userId = btn.id;
-        axios.delete(`http://localhost:3000/admin/remove-member/${userId}/?group=${group}`);
+        axios.delete(`http://65.0.81.231:3000/ChatApp/admin/remove-member/${userId}/?group=${group}`);
         const parentElm = btn.parentElement.parentElement;
         const childElm = btn.parentElement;
         parentElm.removeChild(childElm);

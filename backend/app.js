@@ -39,13 +39,13 @@ app.use(helmet());
 
 app.use(bodyParser.json());
 
-app.use('/user', userRoutes);
+app.use('/ChatApp/user', userRoutes);
 
-app.use('/chat', chatRoutes);
+app.use('/ChatApp/chat', chatRoutes);
 
-app.use('/group', groupRoutes);
+app.use('/ChatApp/group', groupRoutes);
 
-app.use('/admin', adminRoutes);
+app.use('/ChatApp/admin', adminRoutes);
 
 app.use((req, res) => {
     const url = req.url

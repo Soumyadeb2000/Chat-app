@@ -4,11 +4,10 @@ async function login(event) {
         const email = event.target.email.value;
         const password = event.target.password.value;
         const obj = {email, password}
-        const response = await axios.post('http://localhost:3000/user/login', obj);
+        const response = await axios.post('http://65.0.81.231:3000/ChatApp/user/login', obj);
         const token = response.data.token;
         localStorage.setItem('token', token);
-        alert('Successfully login.');
-        window.location.href = "http://127.0.0.1:5500/frontend/Home/home.html"
+        window.location.href = "../Home/home.html"
     } catch (error) {
         alert("User not found");
     }
