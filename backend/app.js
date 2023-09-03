@@ -47,7 +47,7 @@ app.use('/ChatApp/group', groupRoutes);
 
 app.use('/ChatApp/admin', adminRoutes);
 
-app.use((req, res) => {
+app.use('/ChatApp', (req, res) => {
     const url = req.url
     console.log(url);
     res.sendFile(path.join(__dirname, `public/${url}`));
