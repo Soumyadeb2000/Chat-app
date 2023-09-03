@@ -4,8 +4,6 @@ const app = express();
 
 const cors = require('cors');
 
-const helmet = require('helmet');
-
 const bodyParser = require('body-parser');
 
 const sequelize = require('./utils/database');
@@ -35,8 +33,6 @@ app.use(cors({
     credentials: true
 }));
 
-app.use(helmet());
-
 app.use(bodyParser.json());
 
 app.use('/ChatApp/user', userRoutes);
@@ -47,7 +43,7 @@ app.use('/ChatApp/group', groupRoutes);
 
 app.use('/ChatApp/admin', adminRoutes);
 
-app.use('/ChatApp', (req, res) => {
+app.use((req, res) => {
     const url = req.url
     console.log(url);
     res.sendFile(path.join(__dirname, `public/${url}`));
