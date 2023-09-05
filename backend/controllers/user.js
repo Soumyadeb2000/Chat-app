@@ -5,17 +5,16 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 
 const sequelize = require('../utils/database');
-const Members = require('../models/group-members');
 
 require('dotenv').config();
 
 exports.signup = async (req, res) => {
+    const t = await sequelize.transaction();
     try {
         const name = req.body.name;
         const email = req.body.email;
         const phone = req.body.phone;
         const password = req.body.password;
-        const t = await sequelize.transaction();
         const hash = await encryptPassword(password);
         const user = await User.findOne({where: {name: name, email: email, phone: phone}})
         if(!user){
@@ -37,6 +36,7 @@ exports.login = async (req, res) => {
     try {
         const email = req.body.email;
         const password = req.body.password;
+        console.log(email, password);
         const user = await User.findOne({where: {email: email}});
         bcrypt.compare(password, user.password, (err, result) => {
             if(result) {

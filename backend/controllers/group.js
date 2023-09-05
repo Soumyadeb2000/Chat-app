@@ -97,9 +97,7 @@ exports.getisAdmin = async (req, res) => {
         const user = req.user;
         const groupName = req.params.group;
         const group = await Group.findOne({where: {name: groupName}, attributes: ['id']});
-        console.log(group);
         const member = await Member.findOne({where: {userId: user.id, groupId: group.id}, attributes: ['isAdmin']});
-       
         if(member.isAdmin) {
             res.status(200).json({isAdmin: member.isAdmin});
         }

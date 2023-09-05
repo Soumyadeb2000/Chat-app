@@ -1,4 +1,3 @@
-const { where } = require('sequelize');
 const Group = require('../models/group');
 
 const Member = require('../models/group-members');

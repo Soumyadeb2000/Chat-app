@@ -33,7 +33,9 @@ app.use(cors({
     credentials: true
 }));
 
-app.use(bodyParser.json());
+app.use(express.urlencoded({extended: false}));
+
+app.use(bodyParser.json())
 
 app.use('/ChatApp/user', userRoutes);
 

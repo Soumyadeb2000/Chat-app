@@ -72,6 +72,14 @@
                         </div>
                     </form>
                 </div>
+                <div class="col-md-4" id="send-media-form" style="display: none;">
+                    <form  id="media-chat" onsubmit="sendMediaChat(event)" action="http://localhost:3000/ChatApp/chat/get-multimedia-chat" method="post" enctype="multipart/form-data">
+                        <div class="input-group">
+                            <input class="form-control border-black " type="file" name="message" id="message" required>
+                            <input type="submit" value="Send" class="btn btn-dark float-end">
+                        </div>
+                    </form>
+                </div>
             </div>
         </div>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.4.0/axios.min.js"></script>
