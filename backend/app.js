@@ -6,6 +6,8 @@ const cors = require('cors');
 
 const bodyParser = require('body-parser');
 
+// const CronJob = require('cron').CronJob;
+
 const sequelize = require('./utils/database');
 
 const userRoutes = require('./routes/user');
@@ -24,12 +26,15 @@ const Group = require('./models/group');
 
 const Members = require('./models/group-members');
 
+const archivedChat = require('./models/archived-chats');
+
 const path = require('path');
+
+const { Op } = require('sequelize');
 
 require('dotenv').config();
 
 app.use(cors({
-    origin: process.env.ORIGIN,
     credentials: true
 }));
 
@@ -62,6 +67,29 @@ User.hasMany(Members);
 
 Group.hasMany(Chat);
 Chat.belongsTo(Group);
+
+// var job = new CronJob(
+//     '* * * * * *',
+//     async function() {
+//         const t = await sequelize.transaction();
+//         try {
+//             const oneDayAgo = new Date();
+//             oneDayAgo.setDate(oneDayAgo.getDate() - 1);
+//             const chats = await Chat.findAll({where: {createdAt: {[Op.lt]: oneDayAgo}}});
+//             chats.forEach(async (chat) => {
+//                 await archivedChat.create(chat, {transaction: t});
+//                 await Chat.destroy({where: {id: chat.id}, transaction: t});
+//             });
+//             await t.commit();
+//         } catch (error) {
+//             await t.rollback();
+//             console.log(error.message);
+//         }
+//     },
+//     null,
+//     true,
+//     'Asia/Kolkata'
+// );
 
 sequelize.sync()
 .then(() => {
