@@ -35,7 +35,7 @@ const { Op } = require('sequelize');
 require('dotenv').config();
 
 app.use(cors({
-    origin: process.env.ORIGIN,
+    origin: [process.env.ORIGIN, 'http://13.232.181.11'],
     credentials: true
 }));
 

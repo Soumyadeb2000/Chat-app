@@ -4,7 +4,7 @@ async function login(event) {
         const email = event.target.email.value;
         const password = event.target.password.value;
         const obj = {email, password}
-        const response = await axios.post('http://13.232.181.11:4000/ChatApp/user/login', obj);
+        const response = await axios.post('http://localhost:4000/ChatApp/user/login', obj);
         const token = response.data.token;
         localStorage.setItem('token', token);
         window.location.href = "../Home/home.html"
